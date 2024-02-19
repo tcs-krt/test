@@ -13,10 +13,11 @@ on:
 
 env: 
   TEST_VARIABLE: This is a test variable
-  ENVIRONMENT: |-
-    ${{ github.base_ref }} == dev -> environments/dev ||
-    ${{ github.base_ref }} == stg -> environments/stg ||
-    ${{ github.base_ref }} == main -> environments/prod
+  ENVIRONMENT: ${{ (github.base_ref, 'dev' && 'dev') || (github.base_ref, 'main' && 'prod') || 'INVALID' }}
+
+    # ${{ github.base_ref }} == dev -> environments/dev ||
+    # ${{ github.base_ref }} == stg -> environments/stg ||
+    # ${{ github.base_ref }} == main -> environments/prod
 
 jobs:
   test:
@@ -29,4 +30,8 @@ jobs:
     steps:
     - name: test  
       uses: actions/checkout@v4
+
+    - name: set env variables
+      run: |
+        echo "branch=
     
